@@ -1,20 +1,178 @@
-\documentclass{beamer}
+\documentclass[t]{beamer}
+\setlength{\parskip}{5pt}
+%\usetheme{Madrid}  
+
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\cleanlookdateon
+
+\newtheorem{remark}{Remark}
+
+\def\le{\leqslant}
+\def\ge{\geqslant}
+
+\def\Z{\mathbb{Z}}
+\def\N{\mathbb{N}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
 
 \title{CS3230 Tutorial 1}
-\author{Deng Tianle}
-\date{\today}
+\author{Deng Tianle (T15)}
+\date{22 August 2025}
 
 \begin{document}
 
 \frame{\titlepage} 
 
-\begin{frame}{Slide Title}
-  This is some content on a slide.
+\begin{frame}{Introduction}
+  This is Tutorial Group 15 for CS3230.
 
+  \par My name is Deng Tianle: 
   \begin{itemize}
-    \item First point
-    \item Second point
+    \item Year 3 Computer Science and Mathematics (DDP)
+    \item First-time TA :)
+    \item My JC: Raffles Institution (Y5-6)
+    \item I was from Shenzhen, China
   \end{itemize}
 \end{frame}
+\begin{frame}{Admin}
+  Everyone needs to present $3$ times to obtain the $3\%$ tutorial participation marks. (I believe that beyond the presentation, there is no obligation to attend tutorial. But of course, you are encouraged to attend).
+  \begin{align*}
+    &\text{We have $21$ people} \\ 
+    \implies& \text{$63$ presentations} \\
+    \implies& \text{we should have around $6$ presentations per class}.
+  \end{align*}
+  \begin{remark}
+    In later slides I use $P$ to denote presentations, e.g. $P3$ means that the third presenter of the day will present on (possibly a part) of this question. 
+  \end{remark}
+\end{frame}
 
+\begin{frame}{Agenda}
+  This tutorial is about asymptotic notations: $O, \Omega, \Theta, o, \omega$.  
+  \begin{itemize}
+    \item Analogy with $\le, \ge, =, <, >$: Q2
+    \item Computation using limit: Q1 (I rearranged because we can use Q2 here)
+    \item Practical computation, relation between common functions like $\log$, polynomial, $\exp$, factorial: Q3-5
+    \item LeetCode question on removing duplicates (if time permits; I will run the algorithm on the board to show the idea)
+  \end{itemize}
+\end{frame}
+\begin{frame}
+  Let $\N$ denote the set of positive integers. We consider functions $f: \N \to \N$. Let the class of all such functions be $C$. 
+  \begin{definition}
+    Let $f$ and $g$ be functions $\N \to \N$. 
+    We say that $f(n) \in \Theta(g(n))$ if there exist positive constants $c_1, c_2$ such that \[c_1g(n) \le f(n) \le c_2g(n)\] for sufficiently large $n$. We say that $f(n) \in \omega(g(n))$ if for all positive constants $c$, we have
+    \[cg(n)<f(n)\] for sufficiently large $n$. 
+  \end{definition}
+  \begin{remark}
+    All the precise definitions are on the tutorial sheet. I only want to caution that $\forall, \exists$ are considered informal shorthands in mathematics (excluding logic and set theory), it is preferred to spell them out in formal writings. 
+  \end{remark}
+\end{frame}
+\begin{frame}{Q2: P1, 2, 3}
+  Q2 says that $O, \Omega, \Theta, o, \omega$ behave very much like $\le, \ge, =, <, >$ respectively. We want to make this more precise. Recall that $C$ denotes the set of functions $\N \to \N$. From the reflexivity, transitivity and symmetry parts of Q2, we get:
+  \begin{theorem}
+    For $f, g \in C$, we define $f\sim g$ iff $f(n) \in \Theta(g(n))$. Then $\sim$ is an equivalence relation. \footnote{Note that in analysis, $\sim$ already has a meaning that is stronger than this; we do not consider that definition. }
+  \end{theorem}
+  Now we recall the following result from lecture:
+  \[\Theta(g) = O(g)\cap \Omega(g).\]
+  This means that 
+  \[ f(n) \in \Theta(g(n)) \iff \left(\,f(n) \in O(g(n)) \quad \text{and}\quad f(n) \in \Omega(g(n))\,\right).\]
+\end{frame}
+
+\begin{frame}
+  %Together with the facts in Q2, we get
+  \begin{theorem}
+    For $[f], [g] \in C/{\sim}$, we define $[f] \le [g]$ iff $f(n) \in O(g(n))$ iff $g(n) \in \Omega(f(n))$. Then $\le$ is a well-defined partial order on $C/{\sim}$. % 
+  \end{theorem}
+  \begin{proof}
+    Well-definedness follows from lecture result and transitivity. Antisymmetry (if $[f]\le[g], [g]\le[f]$ then $[f]=[g]$) follows from lecture result. The rest follow from Q2.%The only nontrivial part left is that  
+  \end{proof}
+  \begin{theorem}
+    If $f(n) \in o(g(n))$ i.e. $g(n) \in \omega(f(n))$, then $[f]<[g]$ (meaning, $[f] \le [g]$ but $[f] \ne [g]$).
+  \end{theorem}
+  \begin{proof}
+    If $f(n) \in o(g(n))$ and $f(n) \in \Theta(g(n))$, then there is some $c>0$ such that 
+    \[cg(n) \le f(n) < cg(n)\]
+    for sufficiently large $n$, contradiction.
+  \end{proof}
+\end{frame}
+\begin{frame}
+  \begin{remark}
+    \alert{It is not true that $[f]<[g] \implies f(n) \in o(g(n))$ (and similarly for $\omega$)}
+  \end{remark}
+  However, it turns out that $o$ itself induces naturally a strict partial order $<_o$ on $C/{\sim}$ which is `more selective' than $<$ in the sense that $[f]<_o[g] \implies [f]<[g]$ but not vice versa. 
+  \begin{theorem}
+    For $[f], [g] \in C/{\sim}$, we define $[f] <_o [g]$ iff $f(n) \in o(g(n))$ iff $g(n) \in \omega(f(n))$. Then $<_o$ is a well-defined strict partial order on $C/{\sim}$. 
+  \end{theorem}
+  \begin{remark}
+    \alert{They are not total orders on $C/{\sim}$}. 
+  \end{remark}
+  I move the proof to the appendix. Exercise: give counterexamples for the two remarks above. (Hint: consider $g$ that `oscillates')
+  %\par To reiterate about the second remark: you cannot show $o$ (or $\omega$) by using $O$ (or $\Omega$) and $\ne$, you will have to use limit or definition. 
+\end{frame}
+
+\begin{frame}{Q1: P4}
+  The conclusions here are very important tools for computations (as we will see in Q3-5). We recall the definition of limit:
+  \begin{definition}
+    We say that $\lim_{n \to \infty}\phi(n) = l$ if for all $\epsilon>0$, there exists $N$ such that
+    \[n \ge N \implies |\phi(n)-l|<\epsilon.\]
+    We say that $\lim_{n \to \infty}\phi(n) = \infty$ if for all $M$, there exists $N$ such that
+    \[n \ge N \implies \phi(n)>M.\]
+  \end{definition}
+  We would have someone presenting on the one for $O$. Then observe that by Q2, $\Omega$ follows from $O$, $\Theta$ follows from $O$ and $\Omega$, $\omega$ follows from $o$ (make sure you understand the proof in lecture!)
+\end{frame}
+\begin{frame}{Q3-5: P5, 6}
+  We know from calculus/analysis that ($c, d$ are positive constants)
+  \[[\log{n}] <_o [n^d] <_o [(1+c)^n] <_o [n!].\]
+  Some useful facts that follow immediately from definition:
+  \begin{itemize}
+    \item $[cf(n)] = [f(n)]$ for constant $c>0$
+    \item If $f(n)$ is a (finite) sum, then if a term of the sum has some other term $\ge$ it, it can be ignored. 
+  \end{itemize}
+  Most if not all of Q3-5 can be done using limits, order properties and such basic facts if you do not want to directly use definition. 
+  \par I am asked to discuss this `hidden' variant of Q4: consider $2^{\log_4{n}}$, is it in $O(n)$? $\Omega(n)$? $\Theta(\sqrt{n})$ ? $\omega(n)$?
+\end{frame}
+\begin{frame}{Appendix}
+  \begin{theorem}
+    For $[f], [g] \in C/{\sim}$, we define $[f] <_o [g]$ iff $f(n) \in o(g(n))$ iff $g(n) \in \omega(f(n))$. Then $<_o$ is a well-defined strict partial order on $C/{\sim}$. 
+  \end{theorem}
+  \begin{proof}
+    Well-definedness: if $[f_1]=[f_2]$ and $[f_2] <_o [g]$, then there exists $c_0>0$ such that for all $c>0$, we have
+    \[f_1(n) \le c_0f_2(n) < c_0\frac{c}{c_0}g(n)=cg(n)\]
+    for sufficiently large $n$, showing that $[f_1] <_o [g]$. Analogously, if $[g_1]=[g_2]$ and $[f] <_o [g_2]$, then $[f] <_o [g_1]$. 
+    \par Irreflexivity: we have shown that if $[f] <_o [f]$ then $[f] \ne [f]$, contradiction. 
+    \par Assymmetry: trivial exercise in CLRS
+    \par Transitivity: from Q2.
+  \end{proof}
+\end{frame}
 \end{document}
+
+\iffalse
+\begin{frame}
+  %Together with the facts in Q2, we get
+  \begin{theorem}
+    For $[f], [g] \in C/{\sim}$, we define $[f] \le [g]$ iff $f(n) \in O(g(n))$ iff $g(n) \in \Omega(f(n))$. Then $\le$ is a well-defined partial order on $C/{\sim}$. %If $f(n) \in o(g(n))$ i.e. $g(n) \in \omega(f(n))$, then $[f]<[g]$ (meaning, $[f] \le [g]$ but $[f] \ne [g]$). 
+  \end{theorem}
+  \begin{proof}
+    Well-definedness follows from lecture result and transitivity. Antisymmetry (if $[f]\le[g], [g]\le[f]$ then $[f]=[g]$) follows from lecture result. The rest follow from Q2.%The only nontrivial part left is that if $f(n) \in o(g(n))$ and $f(n) \in \Theta(g(n))$, then there is some $c>0$ such that 
+    %\[cg(n) \le f(n) < cg(n)\]
+    %for sufficiently large $n$, contradiction. 
+  \end{proof}
+  \begin{theorem}
+    For $[f], [g] \in C/{\sim}$, we define $[f] <_o [g]$ iff $f(n) \in o(g(n))$ iff $g(n) \in \omega(f(n))$. Then $<_o$ is a well-defined strict partial order on $C/{\sim}$. 
+  \end{theorem}
+  \begin{proof}
+    Well-definedness 
+  \end{proof}
+\end{frame}
+\begin{frame}
+  \begin{remark}
+    \alert{They are not total orders on $C/{\sim}$}. 
+  \end{remark}
+  \begin{remark}
+    \alert{It is not true that $[f]<[g] \implies f(n) \in o(g(n))$ (and similarly for $\omega$)
+  \end{remark}
+  Exercise: give counterexamples for the two claims above. (Hint: consider $g$ that `oscillates')
+  \par To reiterate about the second remark: you can prove $[f]\ne [g]$ by proving $f(n) \in o(g(n))$, which is just taking limits (as you will see in Q1; similar for $\omega$). But you cannot show $o$ (or $\omega$) by using $O$ (or $\Omega$) and $\ne$, you will have to use limit or definition. 
+\end{frame}
+\fi
