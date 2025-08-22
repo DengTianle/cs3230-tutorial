@@ -145,6 +145,37 @@
     \par Transitivity: from Q2.
   \end{proof}
 \end{frame}
+\begin{frame}{Q3}
+  \begin{itemize}
+    \item True: $3^{n+1}=3\cdot3^n \in \Theta(3^n)$ because we are just multiplying by constant. In particular, it is in $O(3^n)$. (If you want to show by definition, take $c=3$ and it goes through for all $n$). 
+    \item False. I will explain this in two ways (there were some questions relating to this part, please feel free to clarify with me further): \begin{itemize}
+      \item Use the theorems on analogy with orders that we have established (this allows you to see immediately whether it is true, and is good for MCQs): by limit, $[2^n]<_o[4^n]$, so $[2^n] < [4^n]$ and so it is not true that $[2^n] \ge [4^n]$ i.e. $4^n \in O(2^n)$. 
+      \item Alternatively, you can use definition (this is good if you know it is false already and is asked to prove it in exam): to prove negation of $4^n \in O(2^n)$, you want to show that for all $c>0$ and for all $n_0$, there is some $n \ge n_0$ such that 
+      \[2^n \cdot 2^n = 4^n > c \cdot 2^n.\]
+      This is indeed true because for large enough $n$ we always have $2^n >c$. 
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+\begin{frame}{Q3}
+  \begin{itemize}
+    \item True: We have 
+    \[\frac{1}{2} n \le 2^{\log{n}-1} \le 2^{\lfloor \log n \rfloor} \le 2^{\log n} = n\]
+    Hence $2^{\lfloor \log n \rfloor} \in O(n)$ (take $c=1$ if you want to show using definition) and $2^{\lfloor \log n \rfloor} \in \Omega(n)$ (take $c=1/2$)
+    \item True: From binomial expansion of $(n+a)^i$, the dominant term is $n^i$ (all lower $n$ powers can be ignored), so this is in $\Theta(n^i)$. 
+  \end{itemize}
+\end{frame}
+\begin{frame}{Q4}
+   I will only discuss the hidden question. We have $2^{\log_4 n} = \sqrt{n}$ (there are many ways to see this depending on your high school background, e.g. use $\log_{2^2}\sqrt{n}^2 = \log {\sqrt{n}}$, or change of base $log_4{n} = \frac{\log{n}}{\log{4}} = \frac{\log n}{2}$) 
+    \par Then for the same options shown, it is in $\Theta(\sqrt{n})$ and $O(n)$ but not in $\Omega(n)$ and hence not in $\omega(n)$ (all can be seen from $\sqrt{n} <_o n$)
+\end{frame}
+\begin{frame}{Q5}
+  As explained in class, $\log(n^2)=2\log(n)$ so $[\log(n^2)]= [\log(n)]$. The rest follow from the facts shown in the slides before Appendix. 
+  \par Final answer:
+  \[[f_1]=[f_5]<_o [f_4] <_o [f_3] <_o [f_2]. \]
+  For $[n!] >_o a^n$, one way to see this is that 
+  \[n! \ge n(n-1)\dots(n/2) \ge (n/2)^{n/2}\]
+  (no need to be too careful but odd/even case of $n$ since we can multiply $n!$ by constant anyway) and $\sqrt{n/2}$ exceeds $a$ for large $n$. 
+\end{frame}
 \end{document}
 
 \iffalse
