@@ -176,6 +176,46 @@
   \[n! \ge n(n-1)\dots(n/2) \ge (n/2)^{n/2}\]
   (no need to be too careful but odd/even case of $n$ since we can multiply $n!$ by constant anyway) and $\sqrt{n/2}$ exceeds $a$ for large $n$. 
 \end{frame}
+
+\begin{frame}{Q5}
+  \[T(n)=4T(n/2)+\sqrt{n}\]
+  Step 1: Guess the answer (without using Master theorem, because it may not always apply). Need some experience/intuition/luck, not 100\% methodological
+  \par Possibility 1: try substitution: $T(n)=cn$, RHS is $2cn+\sqrt{n}$, it seems that LHS might be too small. Next reasonable guess is $n^2$ and you happily observe that $n^2$ satisfies $f(n)=4f(n/2)$. 
+  \par Possibility 2: try dropping the $\sqrt{n}$ term, then observe that 
+  \[f(n)=4f(n/2)=\dots=4^{\log{n}}f(1) = f(1)n^2.\]
+  \par In both cases it is then easy to show that $T(n) \ge cn^2$ and hence $T(n) \in \Omega(n^2)$. 
+\end{frame}
+\begin{frame}{Q5}
+  \[T(n)=4T(n/2)+\sqrt{n}\]
+  Step 2: prove bounds (in which case, the hard case is the upper bound). 
+  \par Most reasonable to try substituting $T(n)=An^2+B\sqrt{n}$. Now you can reverse engineer to make induction work:
+  $T(1)=A+B$, 
+  \begin{align*}
+    T(n) &= 4T(n/2)+\sqrt{n} \\ 
+    &\le 4\left(An^2/4+B\sqrt{n/2}\right)+\sqrt{n} \\
+    &=An^2+(4B/\sqrt{2}+1)\sqrt{n} \\
+    &\le An^2+B\sqrt{n}
+  \end{align*}
+  where we want the last inequality to hold. We can solve for $B=-\sqrt{2}/(4-\sqrt{2})$ and take A accordingly. Hence $T(n) \in O(n^2)$ and we are done. 
+\end{frame}
+\begin{frame}{Q5}
+  Question: why is it that lower bound is $cn^2$ and upper bound is $An^2+B\sqrt{n}$ for \textbf{negative} $B$?
+  \par The `paradox' resolves when you realise that for $f(n)=4f(n/2)$ such that $c := f(1)=T(1)$ we have
+  \[f(n) = cn^2\] 
+  and
+  \[T(n) = \left(c+\frac{\sqrt{2}}{4-\sqrt{2}}\right)n^2-\frac{\sqrt{2}}{4-\sqrt{2}}\sqrt{n}\]
+  (basically same induction but we actually have equalities). 
+\end{frame}
+\begin{frame}{Q6}
+  Alternative method: 
+  \[T(k, n) = 2T(k/2, n)+\Theta(nk)\]
+  \[\frac{T(k, n)}{k} = \frac{T(k/2, n)}{k/2}+\frac{\Theta(nk)}{k}\]
+  by telescoping or pushing $\log{k}$ times we get
+  \[\frac{T(k, n)}{k} = T(1, n)+\frac{\log{k}\Theta(nk)}{k}. \]
+  Same answer, $T(k, n) \in \Theta(nk\log{k})$.
+  \[\mathbb{1}\]
+\end{frame}
+
 \end{document}
 
 \iffalse
