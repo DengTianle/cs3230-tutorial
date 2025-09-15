@@ -1,0 +1,66 @@
+\documentclass{scrartcl}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\usepackage{graphicx}
+%\usepackage{mathtools}
+
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\cleanlookdateon
+
+\def\le{\leqslant}
+\def\ge{\geqslant}
+
+%\def\C{\mathcal{C}}
+\def\Z{\mathbb{Z}}
+\def\N{\mathbb{N}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
+
+\def\S{\mathbf{S}}
+\def\M{\mathbf{M}}
+\def\P{\mathbf{P}}
+\def\rR{\mathbf{R}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\id}{Id}
+\DeclareMathOperator{\im}{im}
+
+\begin{document}
+
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+%\theoremstyle{definition}
+\newtheorem{definition}{Definition}[subsection]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}
+\newtheorem*{examples}{Examples}
+
+\title{CS3230 WA1 Comments}
+\author{Deng Tianle}
+\date{\today}
+\maketitle
+
+\begin{itemize}
+  \item Since this is the first assignment, I have decided to be more lenient towards minor slips like forgetting to write the final answer, writing $\epsilon=1$ when it should be $<1$, etc. Please do not make such mistakes again in the future. 
+  \item For the last question, most of you did a very good job. However, there are some cases where $\Theta$ notation is used where more precision is required. For example, it is not enough to just determine each level to $\Theta$, for example, if my levels look like $\log\log(n)-1$, $\log\log(n)-2$, $\log\log(n)-4$, etc. the result is very different from $\log\log(n)-\log{2}$, $\log\log(n)-\log{4}$, etc. In other words, you should not underestimated constants on each level because these constant may form a sequence as you go down the levels and may have a huge effect. 
+  \item For the last two questions, I decide to be lenient if you have used a correct approach and done most of the calculations, even if you missed stating some details. However, I have penalised some cases where the approach is not quite logical and/or the workings gave an incorrect answer but you somehow still stated the correct answer without much explanation. 
+  \item Notation issues: \begin{itemize}
+    \item When you need say $f(n)-g(n) \to \infty$, it is not enough to just write $f(n) > g(n)$. 
+    \item If say $f(n) \to 1$ as $n \to \infty$, it is not correct to write $f(n)=1$ as $n \to \infty$. 
+  \end{itemize}
+  \item It is in general not true that $\lim \frac{f}{g} = \lim \frac{\log{f}}{\log{g}}$ or $\lim \frac{f}{g} = \lim \frac{2^{f}}{2^{g}}$. However, the following is true and enough for the cases in this assignment: (for below, we consider what happens as $n \to \infty$) \begin{enumerate}
+    \item If $f-g \to \infty$, then $2^{f-g} = \frac{2^f}{2^g} \to \infty$ i.e. $2^g \in o(2^f)$. In other words, if $\log{f}-\log{g} \to \infty$ then $f/g \to \infty$ i.e. $g \in o(f)$. 
+    \item Also, say $f \to \infty$ and $g \to \infty$. Then if $f/g \to c>1$ (including $c=\infty$), then $f-g \to \infty$. Hence, this gives a condition where we can repeatedly take $\log$.
+  \end{enumerate} As an example, consider Q8: we have $\log\log f(n) = \log\sqrt{\log{n}}$ and $\log\log g(n) = \sqrt{\log\log{n}}$, so $\log\log f(n) - \log\log g(n) \to \infty$. Hence $\log{f}/\log{g} \to \infty$. Using the condition above, it implies finally $f/g \to \infty$, hence $f(n) \in \omega(g(n))$. This justifies the method to take double logarithm. (I came up with the above on my own, so please feel free to tell me if you have improvements to the conditions, etc.)
+\end{itemize}
+
+\end{document}
