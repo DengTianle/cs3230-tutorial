@@ -1,0 +1,97 @@
+\documentclass[t]{beamer}
+\setlength{\parskip}{5pt}
+%\usetheme{Madrid}  
+
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\cleanlookdateon
+
+%\usepackage{listings}
+\usepackage{tikz}
+\usepackage{graphicx}
+
+\newtheorem{remark}{Remark}
+
+\def\le{\leqslant}
+\def\ge{\geqslant}
+
+\def\Z{\mathbb{Z}}
+\def\N{\mathbb{N}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
+
+\title{CS3230 Tutorial 11}
+\author{Deng Tianle (T15)}
+\date{6 November 2025}
+
+\begin{document}
+
+\frame{\titlepage} 
+
+\begin{frame}{Q1}
+  Given a set $\{(x_1, y_1), \dots, (x_n, y_n)\}$ of $n$ points on $\R^2$, what is the best running time for finding the $\sqrt{n}$ points closet to the origin?
+  \par Notice that this is $\Omega(n)$ since we need to look at all $n$ points at least once. 
+  \pause 
+  \par Answer: $\Theta(n)$ using median of medians (but large constant factor):
+  \begin{enumerate}
+    \item Compute all $n$ distances from origin in $\Theta(n)$
+    \item Select the $i=\sqrt{n}$-th closet point to origin in $\Theta(n)$ (this uses the median of medians algorithm introduced in lecture)
+    \item Partition around this $\sqrt{n}$-th element and report first $\sqrt{n}$ points in $\Theta(\sqrt{n})$. 
+  \end{enumerate}
+  If you do not know/want median of medians, then just sort the distances in $\Theta(n\log{n})$. 
+\end{frame}
+\begin{frame}{Q2}
+  Is it possible to modify non-randomised Quicksort to run in worst-case $\Theta(n\log{n})$ time by changing the pivot selection method?
+
+  \par Yes. We can use median of medians to select the pivot to be the median itself in $\Theta(n)$ times. This just adds to the running time to partition, also in $\Theta(n)$. This gives the time complexity
+  \[T(n) = 2T(n/2)+kn, \]
+  hence $T(n) \in \Theta(n\log{n})$. 
+  \par However, this version is much slower in practice than randomised Quicksort due to large constant factor. 
+\end{frame}
+\begin{frame}{Q3}
+  Similar considerations as in Quicksort. 
+  \par Suppose in every recursive call of Quickselect, size of subarray reduced from $n$ to at most $9n/10$. This is good because
+  \[T(n) = T(9n/10)+kn\]
+  gives $T(n) = \Theta(n)$ e.g. by master theorem (check regularity condition).
+  \par Suppose in every recursive call of Quickselect, size of subarray reduced from $n$ to $n-1$. In this case, 
+  \[T(n)=T(n-1)+kn\]
+  gives $T(n) \in \Theta(n^2)$ similar to sum of arithmetic progression. 
+\end{frame}
+\begin{frame}{Q3}
+  Actually, this suggests a way of seeing the expected time. For example, we partition the list into the middle half (i.e. lower to upper quartile) and otherwise. Then on expectation, our random pivot fall in the middle half after two random choices (by geometric distribution, expectation is $1/0.5 = 2$). Then $T(n) \in \Theta(n)$. 
+\end{frame}
+\begin{frame}{Q4}
+  Formal analysis of expected time complexity of Quickselect. Let $T(n)$ be the running time of Quickselect on an input of size $n$. For $k=0, 1, \dots, n-1$, we define the indicator random variable $X_k$ where
+  \[X_k = \begin{cases}
+    1, \quad \text{if Partitaion routine generates a $k$ to $n-k-1$ split} \\
+    0, \quad \text{otherwise}
+  \end{cases}\]
+  Note that $E[X_k] = \frac{1}{n}$. 
+  \par Now refer to the recurrrence in the tutorial sheet. We can simplify it to:
+  \[T(n) = \sum_{k=0}^{n-1}X_k(T(\max(k, n-k-1))+\Theta(n)). \]
+  Then taking expectation and using linearity, 
+  \[E[T(n)] = \sum_{k=0}^{n-1}E[X_k(T(\max(k, n-k-1))+\Theta(n))].\]
+\end{frame}
+\begin{frame}{Q4}
+  Fix $k$, $X_k$ is independent from $T(\max(k, n-k-1))$. This is because $X_k$ only depends on the first pivot choice while $T(\max(k, n-k-1))$ only depends on later pivot choices. Hence
+  \[E[T(n)] = \sum_{k=0}^{n-1}E[X_k]E[(T(\max(k, n-k-1))+\Theta(n))].\]
+  By linearity and substitution:
+  \[E[T(n)] = \frac{1}{n}\sum_{k=0}^{n-1}E[T(\max(k, n-k-1))]+\frac{1}{n}\sum_{k=0}^{n-1}\Theta(n)\]
+  By symmetry, 
+  \[E[T(n)] \le \frac{2}{n}\sum_{k=\lfloor n/2 \rfloor}^{n-1}E[T(k)]+\Theta(n).\]
+\end{frame}
+\begin{frame}{Q4}
+  Use substitution method to show that $E[T(n)] \le cn$. We use the fact that $\sum_{k=\lfloor n/2 \rfloor}^{n-1}k \le 3n^2/8$, compute
+  \begin{align*}
+    E[T(n)] \le \frac{2}{n}\sum_{k=\lfloor n/2 \rfloor}^{n-1} ck + dn \\
+    E[T(n)] \le \frac{2c}{n}\left(\frac{3n^2}{8}\right)+dn \\
+    E[T(n)] \le cn-\left(\frac{cn}{4}-dn\right)
+  \end{align*}
+  so the proof goes through by choosing $c>4d$.
+\end{frame}
+\begin{frame}{LeetCode}
+  Find $k$-th largest element in a stream. 
+  \par Use a (min) priority queue. Cap size to be at most $k$. If adding the next element will make the size go above $k$, we compare the root (which is the $k$-th largest currently) with the next element.  Keep the larger of the two. From now on, output the root after each addition. 
+\end{frame}
+\end{document}
